@@ -22,6 +22,59 @@ public class Dictionary {
 		defTokens = new HashMap<>();
 	}
 
+	public void addSlang(String slang, String def) throws Exception {
+		HashSet<String> defSet = slangDefs.get(slang);
+		// If the word doesn't exist in dictionary yet
+		if (defSet == null) {
+			defSet = new HashSet<>();
+			defSet.add(def);
+			slangDefs.put(slang, defSet);
+		}
+		else {
+			defSet.add(def);
+		}
+
+		// Break down the new definition into tokens then map those tokens to the slang
+		String[] tokenList = def.toLowerCase().split(" ");
+		for (String token : tokenList) {
+			HashSet<String> slangSet = defTokens.get(token);
+			if (slangSet == null) {
+				slangSet = new HashSet<>();
+				slangSet.add(slang);
+				defTokens.put(token, slangSet);
+			}
+			else {
+				slangSet.add(slang);
+			}
+		}
+	}
+
+	public void addSlang(String slang, String[] multiDef) throws Exception {
+		for (String def : multiDef) {
+			addSlang(slang, def);
+		}
+	}
+
+	public boolean existSlang(String slang) {
+		return slangDefs.containsKey(slang);
+	}
+
+	public void overwriteSlang(String slang, String def) throws Exception {
+		// Delete the old dictionary record
+		HashSet<String> defSet = slangDefs.remove(slang);
+
+		// Delete the mappings from the old definition tokens to the slang
+		for (String oldDef : defSet) {
+			String[] tokenList = oldDef.toLowerCase().split(" ");
+			for (String token : tokenList) {
+				defTokens.get(token).remove(slang);
+			}
+		}
+
+		// Add new record and mapping to dictionary
+		addSlang(slang, def);
+	}
+
 	public void init() throws Exception {
 		File file = new File("/data/init/slang.txt");
 		if (file.exists() && !file.isDirectory()) {
@@ -33,7 +86,9 @@ public class Dictionary {
 				// [0] = slang, [1] = definitions (need to be splitted further)
 				String[] slangSplit = line.split("`");
 				if (slangSplit.length != 2) continue;
-				
+				String slang = slangSplit[0];
+				String[] defs = slangSplit[1].split("\\s*\\|\\s*");
+				addSlang(slang, defs);
 			}
 
 			br.close();
@@ -56,5 +111,15 @@ public class Dictionary {
 		}
 		// If there's no saved data, load the initial slang.txt
 		init();
+	}
+
+	public void save() throws Exception {
+		File file = new File("/data/saved/dictionary.dat");
+		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+
+		oos.writeObject(slangDefs);
+		oos.writeObject(defTokens);
+
+		oos.close();
 	}
 }
