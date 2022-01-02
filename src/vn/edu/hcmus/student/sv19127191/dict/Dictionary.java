@@ -13,19 +13,22 @@ import java.util.stream.Collectors;
  */
 public class Dictionary {
 	// Map from a slang to its definitions
-	HashMap<String, HashSet<String>> slangDefs;
+	private HashMap<String, HashSet<String>> slangDefs;
 	// Map from a definition token to a set of possible slangs whose definitions contain this token
-	HashMap<String, HashSet<String>> defTokens;
+	private HashMap<String, HashSet<String>> defTokens;
+	// History of queries
+	public final History history;
 	// For randomizer methods
-	LocalDate lastRandomDate = LocalDate.MIN;
-	String dailySlang = "";
-	Random random = new Random();
-	boolean shouldRefresh = false;
-	List<String> slangList = null;
+	private LocalDate lastRandomDate = LocalDate.MIN;
+	private String dailySlang = "";
+	private final Random random = new Random();
+	private boolean shouldRefresh = false;
+	private List<String> slangList = null;
 
 	public Dictionary() {
 		slangDefs = new HashMap<>();
 		defTokens = new HashMap<>();
+		history = new History();
 	}
 
 	public List<String> getSlangList() {
@@ -216,6 +219,7 @@ public class Dictionary {
 			ois.close();
 			return;
 		}
+		history.load();
 		// If there's no saved data, load the initial slang.txt
 		init();
 		getSlangList();
@@ -231,6 +235,7 @@ public class Dictionary {
 		oos.writeObject(dailySlang);
 
 		oos.close();
+		history.save();
 	}
 
 	public String getRandomSlang() {
