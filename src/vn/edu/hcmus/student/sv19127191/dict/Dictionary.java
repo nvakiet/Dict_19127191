@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * vn.edu.hcmus.student.sv19127191.dict<br/>
@@ -20,6 +21,13 @@ public class Dictionary {
 	public Dictionary() {
 		slangDefs = new HashMap<>();
 		defTokens = new HashMap<>();
+	}
+
+	public HashSet<String> getDefs(String slang) {
+		HashSet<String> defs = slangDefs.get(slang);
+		if (defs == null)
+			return new HashSet<>();
+		else return defs;
 	}
 
 	public void addSlang(String slang, String def) throws Exception {
@@ -55,37 +63,43 @@ public class Dictionary {
 		}
 	}
 
+	public void removeSlang(String slang) throws Exception {
+		// Delete the dictionary record
+		HashSet<String> defSet = slangDefs.remove(slang);
+
+		// Delete the mappings from the definition tokens to the slang
+		for (String oldDef : defSet) {
+			String[] tokenList = oldDef.toLowerCase().split(" ");
+			for (String token : tokenList) {
+				HashSet<String> slangSet = defTokens.get(token);
+				slangSet.remove(slang);
+				if (slangSet.isEmpty())
+					defTokens.remove(token, slangSet);
+			}
+		}
+	}
+
 	public boolean existSlang(String slang) {
 		return slangDefs.containsKey(slang);
 	}
 
 	public void overwriteSlang(String slang, String def) throws Exception {
-		// Delete the old dictionary record
-		HashSet<String> defSet = slangDefs.remove(slang);
-
-		// Delete the mappings from the old definition tokens to the slang
-		for (String oldDef : defSet) {
-			String[] tokenList = oldDef.toLowerCase().split(" ");
-			for (String token : tokenList) {
-				defTokens.get(token).remove(slang);
-			}
-		}
+		// Remove old record
+		removeSlang(slang);
 
 		// Add new record and mapping to dictionary
 		addSlang(slang, def);
 	}
 
-	public HashMap<String, HashSet<String>> querySlang(String slang) throws Exception {
-		HashMap<String, HashSet<String>> result = new HashMap<>();
-		for (String key : slangDefs.keySet()) {
-			if (key.contains(slang)) {
-				result.put(key, slangDefs.get(key));
-			}
-		}
+	public ArrayList<String> querySlang(String slang) throws Exception {
+		ArrayList<String> result = slangDefs.keySet()
+				.stream()
+				.filter(word -> word.contains(slang))
+				.collect(Collectors.toCollection(ArrayList::new));
 		return result;
 	}
 
-	public HashMap<String, HashSet<String>> queryDefinition(String def, float miss_ratio) throws Exception {
+	public ArrayList<String> queryDefinition(String def, float miss_ratio) throws Exception {
 		HashSet<String> result = null;
 		HashSet<String> temp = null;
 		String[] tokenList = def.toLowerCase().split(" ");
@@ -115,14 +129,11 @@ public class Dictionary {
 			}
 		}
 
-		// Create the result map from found slangs to their definitions
-		HashMap<String, HashSet<String>> map = new HashMap<>();
-		if (result == null)
-			return map;
-		for (String key : result) {
-			map.put(key, slangDefs.get(key));
-		}
-		return map;
+		// Convert the result to list
+		ArrayList<String> list = new ArrayList<>();
+		if (result != null)
+			list.addAll(result);
+		return list;
 	}
 
 	public void init() throws Exception {
@@ -174,16 +185,16 @@ public class Dictionary {
 		oos.close();
 	}
 
-	public static ArrayList<ArrayList<String>> to2dList(HashMap<String, HashSet<String>> hashMap) {
-		ArrayList<ArrayList<String>> result = new ArrayList<>();
-		for (String key : hashMap.keySet()) {
-			for (String value : hashMap.get(key)) {
-				ArrayList<String> row = new ArrayList<>(2);
-				row.add(key);
-				row.add(value);
-				result.add(row);
-			}
-		}
-		return result;
-	}
+//	public static ArrayList<ArrayList<String>> to2dList(HashMap<String, HashSet<String>> hashMap) {
+//		ArrayList<ArrayList<String>> result = new ArrayList<>();
+//		for (String key : hashMap.keySet()) {
+//			for (String value : hashMap.get(key)) {
+//				ArrayList<String> row = new ArrayList<>(2);
+//				row.add(key);
+//				row.add(value);
+//				result.add(row);
+//			}
+//		}
+//		return result;
+//	}
 }

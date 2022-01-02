@@ -17,14 +17,14 @@ public class Main {
 		try {
 			Dictionary dict = new Dictionary();
 			dict.load();
-			double[] measures = new double[100];
-			for (int i = 0; i < 100; ++i) {
+			double[] measures = new double[1];
+			for (int i = 0; i < 1; ++i) {
 				long startTime = System.nanoTime();
-				ArrayList<ArrayList<String>> res = Dictionary.to2dList(dict.querySlang("i"));
+				ArrayList<String> res = dict.queryDefinition("it", 1f);
 				long stopTime = System.nanoTime();
-//				for (ArrayList<String> row : res) {
-//					System.out.println(row.get(0) + " --> " + row.get(1));
-//				}
+				for (String s : res) {
+					System.out.println(s);
+				}
 				measures[i] = (stopTime - startTime) / 1_000_000_000.0;
 				System.out.printf("Time elapsed: %.6f\n", measures[i]);
 			}
