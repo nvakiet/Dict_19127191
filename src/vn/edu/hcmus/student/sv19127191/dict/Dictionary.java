@@ -1,9 +1,8 @@
 package vn.edu.hcmus.student.sv19127191.dict;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,10 +16,24 @@ public class Dictionary {
 	HashMap<String, HashSet<String>> slangDefs;
 	// Map from a definition token to a set of possible slangs whose definitions contain this token
 	HashMap<String, HashSet<String>> defTokens;
+	// For randomizer methods
+	LocalDate lastRandomDate = LocalDate.MIN;
+	String dailySlang = "";
+	Random random = new Random();
+	boolean shouldRefresh = false;
+	List<String> slangList = null;
 
 	public Dictionary() {
 		slangDefs = new HashMap<>();
 		defTokens = new HashMap<>();
+	}
+
+	public List<String> getSlangList() {
+		if (slangList == null || shouldRefresh) {
+			slangList = new ArrayList<>(slangDefs.keySet());
+			shouldRefresh = false;
+		}
+		return slangList;
 	}
 
 	public HashSet<String> getDefs(String slang) {
@@ -55,6 +68,8 @@ public class Dictionary {
 				slangSet.add(slang);
 			}
 		}
+
+		shouldRefresh = true;
 	}
 
 	public void addSlang(String slang, String[] multiDef) throws Exception {
@@ -77,6 +92,8 @@ public class Dictionary {
 					defTokens.remove(token, slangSet);
 			}
 		}
+
+		shouldRefresh = true;
 	}
 
 	public void removeDefinition(String slang, String def) throws Exception {
@@ -94,6 +111,16 @@ public class Dictionary {
 			if (slangSet.isEmpty())
 				defTokens.remove(token, slangSet);
 		}
+
+		shouldRefresh = true;
+	}
+
+	public void changeSlang(String oldSlang, String newSlang) throws Exception {
+		HashSet<String> defSet = slangDefs.get(oldSlang);
+		if (defSet == null)
+			throw new Exception("This slang doesn't exist in the database. Please add a new slang.");
+		removeSlang(oldSlang);
+		addSlang(newSlang, defSet.toArray(String[]::new));
 	}
 
 	public boolean existSlang(String slang) {
@@ -109,11 +136,10 @@ public class Dictionary {
 	}
 
 	public ArrayList<String> querySlang(String slang) throws Exception {
-		ArrayList<String> result = slangDefs.keySet()
-				.stream()
+		getSlangList();
+		return slangList.stream()
 				.filter(word -> word.contains(slang))
 				.collect(Collectors.toCollection(ArrayList::new));
-		return result;
 	}
 
 	public ArrayList<String> queryDefinition(String def, float miss_ratio) throws Exception {
@@ -185,11 +211,14 @@ public class Dictionary {
 			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
 			slangDefs = (HashMap<String, HashSet<String>>) ois.readObject();
 			defTokens = (HashMap<String, HashSet<String>>) ois.readObject();
+			lastRandomDate = (LocalDate) ois.readObject();
+			dailySlang = (String) ois.readObject();
 			ois.close();
 			return;
 		}
 		// If there's no saved data, load the initial slang.txt
 		init();
+		getSlangList();
 	}
 
 	public void save() throws Exception {
@@ -198,20 +227,32 @@ public class Dictionary {
 
 		oos.writeObject(slangDefs);
 		oos.writeObject(defTokens);
+		oos.writeObject(lastRandomDate);
+		oos.writeObject(dailySlang);
 
 		oos.close();
 	}
 
-//	public static ArrayList<ArrayList<String>> to2dList(HashMap<String, HashSet<String>> hashMap) {
-//		ArrayList<ArrayList<String>> result = new ArrayList<>();
-//		for (String key : hashMap.keySet()) {
-//			for (String value : hashMap.get(key)) {
-//				ArrayList<String> row = new ArrayList<>(2);
-//				row.add(key);
-//				row.add(value);
-//				result.add(row);
-//			}
-//		}
-//		return result;
-//	}
+	public String getRandomSlang() {
+		getSlangList();
+		return slangList.get(random.nextInt(slangList.size()));
+	}
+
+	public String getRandomDefinition(String slang) {
+		List<String> defList = getDefs(slang).stream().toList();
+		if (defList.isEmpty())
+			return "";
+		return defList.get(random.nextInt(defList.size()));
+	}
+
+	public String dailyRandomSlang() {
+		LocalDate today = LocalDate.now();
+		// If it's a new day since the last daily random or it's the first time running
+		if (today.isAfter(lastRandomDate)
+				|| (lastRandomDate.equals(LocalDate.MIN) && dailySlang.equals(""))) {
+			lastRandomDate = today;
+			dailySlang = getRandomSlang();
+		}
+		return dailySlang;
+	}
 }
