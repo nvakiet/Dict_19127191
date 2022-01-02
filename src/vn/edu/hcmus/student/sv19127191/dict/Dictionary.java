@@ -79,6 +79,23 @@ public class Dictionary {
 		}
 	}
 
+	public void removeDefinition(String slang, String def) throws Exception {
+		// Remove the definition from the slang def set
+		slangDefs.get(slang).remove(def);
+		if (slangDefs.get(slang).isEmpty()) {
+			slangDefs.remove(slang);
+		}
+
+		// Remove the mapping from this slang's tokens to the slang
+		String[] tokenList = def.split(" ");
+		for (String token : tokenList) {
+			HashSet<String> slangSet = defTokens.get(token);
+			slangSet.remove(slang);
+			if (slangSet.isEmpty())
+				defTokens.remove(token, slangSet);
+		}
+	}
+
 	public boolean existSlang(String slang) {
 		return slangDefs.containsKey(slang);
 	}
