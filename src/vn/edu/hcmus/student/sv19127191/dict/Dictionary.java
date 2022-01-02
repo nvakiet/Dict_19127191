@@ -2,6 +2,7 @@ package vn.edu.hcmus.student.sv19127191.dict;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,6 +140,7 @@ public class Dictionary {
 	}
 
 	public ArrayList<String> querySlang(String slang) throws Exception {
+		history.addRecord(new Record(LocalDateTime.now(), slang, true));
 		getSlangList();
 		return slangList.stream()
 				.filter(word -> word.contains(slang))
@@ -146,6 +148,7 @@ public class Dictionary {
 	}
 
 	public ArrayList<String> queryDefinition(String def, float miss_ratio) throws Exception {
+		history.addRecord(new Record(LocalDateTime.now(), def, false));
 		HashSet<String> result = null;
 		HashSet<String> temp = null;
 		String[] tokenList = def.toLowerCase().split(" ");
@@ -208,6 +211,7 @@ public class Dictionary {
 
 	@SuppressWarnings("unchecked")
 	public void load() throws Exception {
+		history.load();
 		File file = new File("data/saved/dictionary.dat");
 		// If there's saved data, load the saved dictionary
 		if (file.exists() && !file.isDirectory()) {
@@ -219,7 +223,6 @@ public class Dictionary {
 			ois.close();
 			return;
 		}
-		history.load();
 		// If there's no saved data, load the initial slang.txt
 		init();
 		getSlangList();
