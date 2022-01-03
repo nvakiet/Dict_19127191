@@ -1,10 +1,14 @@
 package vn.edu.hcmus.student.sv19127191;
 
 import vn.edu.hcmus.student.sv19127191.dict.Dictionary;
+import vn.edu.hcmus.student.sv19127191.ui.MainFrame;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * vn.edu.hcmus.student.sv19127191<br/>
@@ -13,7 +17,7 @@ import java.util.List;
  * Description: ...<br/>
  */
 public class Main {
-	public static void main(String[] args) {
+	public static void mainTest(String[] args) {
 		try {
 			Dictionary dict = new Dictionary();
 			dict.load();
@@ -37,5 +41,12 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) {
+		MainFrame frame = new MainFrame();
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
 	}
 }

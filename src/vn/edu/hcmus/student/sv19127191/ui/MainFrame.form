@@ -1,13 +1,472 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="vn.edu.hcmus.student.sv19127191.ui.MainFrame">
-  <grid id="27dc6" row-count="1" column-count="1" layout-manager="GridLayoutManager">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
-      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+      <xy x="20" y="20" width="1300" height="600"/>
     </constraints>
-    <properties/>
+    <properties>
+      <minimumSize width="1300" height="600"/>
+      <opaque value="false"/>
+      <preferredSize width="1300" height="600"/>
+    </properties>
     <border type="none"/>
-    <children/>
+    <children>
+      <grid id="c999f" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="2" hsize-policy="2" anchor="8" fill="2" indent="0" use-parent-layout="false">
+            <preferred-size width="247" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-1"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="1e4bd" class="javax.swing.JButton" binding="dictBtn">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="151" height="38"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-11420851"/>
+              <contentAreaFilled value="true"/>
+              <focusPainted value="false"/>
+              <focusable value="true"/>
+              <font name="UD Digi Kyokasho N-B" size="24" style="1"/>
+              <foreground color="-1"/>
+              <horizontalTextPosition value="0"/>
+              <icon value="dictionary.png"/>
+              <text value="DICTIONARY"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+          <component id="3a2c7" class="javax.swing.JButton" binding="histBtn">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="151" height="38"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-1857753"/>
+              <focusPainted value="false"/>
+              <focusable value="true"/>
+              <font name="UD Digi Kyokasho N-B" size="24" style="1"/>
+              <foreground color="-1"/>
+              <horizontalTextPosition value="0"/>
+              <icon value="history.png"/>
+              <text value="HISTORY"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+          <component id="ff88b" class="javax.swing.JButton" binding="sltdBtn">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="151" height="38"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-11763201"/>
+              <focusPainted value="false"/>
+              <font name="UD Digi Kyokasho N-B" size="24" style="1"/>
+              <foreground color="-1"/>
+              <horizontalTextPosition value="0"/>
+              <icon value="sltd.png"/>
+              <text value="SLANG OF THE DAY"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+          <component id="fbf79" class="javax.swing.JButton" binding="quizBtn">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="151" height="38"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-27161"/>
+              <focusPainted value="false"/>
+              <font name="UD Digi Kyokasho N-B" size="24" style="1"/>
+              <foreground color="-1"/>
+              <horizontalTextPosition value="0"/>
+              <icon value="quiz.png"/>
+              <text value="QUIZ"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="c6b34" binding="cardPane" layout-manager="CardLayout" hgap="5" vgap="5" show="6a909">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="2" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-5242925"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="6a909" binding="dictPanel" layout-manager="BorderLayout" hgap="0" vgap="5">
+            <constraints>
+              <card name="dictCard"/>
+            </constraints>
+            <properties>
+              <background color="-5242925"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <grid id="2f5ff" layout-manager="GridLayoutManager" row-count="3" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="North"/>
+                <properties>
+                  <background color="-5242925"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="b700" class="javax.swing.JComboBox" binding="queryTypeBox">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Fira Code" size="16" style="0"/>
+                      <maximumRowCount value="2"/>
+                      <model>
+                        <item value="slang"/>
+                        <item value="definition"/>
+                      </model>
+                    </properties>
+                  </component>
+                  <component id="8f805" class="javax.swing.JTextField" binding="searchField">
+                    <constraints>
+                      <grid row="1" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <font name="Arial" size="16" style="0"/>
+                      <margin top="3" left="8" bottom="3" right="8"/>
+                    </properties>
+                  </component>
+                  <component id="f5232" class="javax.swing.JButton" binding="addBtn">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <icon value="plus.png"/>
+                      <text value="ADD"/>
+                      <toolTipText value="Add a new slang to the dictionary"/>
+                    </properties>
+                  </component>
+                  <component id="89f1b" class="javax.swing.JButton" binding="editBtn">
+                    <constraints>
+                      <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <icon value="edit.png"/>
+                      <text value="EDIT"/>
+                      <toolTipText value="Change a slang from the dictionary"/>
+                    </properties>
+                  </component>
+                  <component id="e18aa" class="javax.swing.JButton" binding="delSlangBtn">
+                    <constraints>
+                      <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <icon value="minus.png"/>
+                      <text value="SLANG"/>
+                      <toolTipText value="Remove a slang from dictionary"/>
+                    </properties>
+                  </component>
+                  <component id="d5fbf" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Times New Roman" size="24" style="1"/>
+                      <horizontalAlignment value="4"/>
+                      <horizontalTextPosition value="4"/>
+                      <labelFor value=""/>
+                      <text value="Search for a:"/>
+                    </properties>
+                  </component>
+                  <component id="47f7f" class="javax.swing.JButton" binding="refreshBtn">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18"/>
+                      <icon value="refresh.png"/>
+                      <text value=""/>
+                      <toolTipText value="Refresh the whole dictionary"/>
+                    </properties>
+                  </component>
+                  <component id="baec3" class="javax.swing.JButton" binding="resetBtn">
+                    <constraints>
+                      <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Reset"/>
+                      <toolTipText value="Reset initial dictionary"/>
+                    </properties>
+                  </component>
+                  <component id="f5df3" class="javax.swing.JButton" binding="searchBtn">
+                    <constraints>
+                      <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <focusPainted value="false"/>
+                      <font name="Consolas" size="22" style="1"/>
+                      <horizontalTextPosition value="0"/>
+                      <icon value="loupe.png"/>
+                      <text value=""/>
+                      <toolTipText value="Start searching"/>
+                    </properties>
+                  </component>
+                  <component id="7a4e9" class="javax.swing.JButton" binding="delDefBtn">
+                    <constraints>
+                      <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <icon value="minus.png"/>
+                      <text value="DEFINITION"/>
+                      <toolTipText value="Remove a definition from the selected slang"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="f2d29" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <background color="-5242925"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <scrollpane id="5a6a8">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="8f740" class="javax.swing.JList" binding="slangJList">
+                        <constraints/>
+                        <properties>
+                          <selectionMode value="0"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
+                  <scrollpane id="d1adc">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="df366" class="javax.swing.JList" binding="defJList">
+                        <constraints/>
+                        <properties>
+                          <selectionMode value="0"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="ca4aa" binding="histPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <card name="histCard"/>
+            </constraints>
+            <properties>
+              <background color="-1617"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="d5bae">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1617"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="abd91" class="javax.swing.JTable" binding="histTable">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="208c1" binding="sltdPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="5">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <card name="sltdCard"/>
+            </constraints>
+            <properties>
+              <background color="-6365441"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <grid id="b9954" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-6365441"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="e5c64" class="javax.swing.JLabel" binding="randomSlang">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Tahoma" size="36" style="1"/>
+                      <horizontalAlignment value="0"/>
+                      <horizontalTextPosition value="0"/>
+                      <text value="Slang"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <scrollpane id="dac8f">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-6365441"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="57cac" class="javax.swing.JList" binding="randDefJList">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <font size="16" style="0"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="7c269" binding="quizPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <card name="quizCard"/>
+            </constraints>
+            <properties>
+              <background color="-270593"/>
+              <enabled value="true"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <grid id="57f2e" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="North"/>
+                <properties>
+                  <background color="-270593"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="bddf7" class="javax.swing.JButton" binding="quiz2Btn">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <focusPainted value="false"/>
+                      <font name="UD Digi Kyokasho N-B" size="20" style="1"/>
+                      <horizontalTextPosition value="11"/>
+                      <text value="Guess Slang"/>
+                      <toolTipText value="Guess the slang from a definition"/>
+                    </properties>
+                  </component>
+                  <component id="902bd" class="javax.swing.JButton" binding="quiz1Btn">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <focusPainted value="false"/>
+                      <font name="UD Digi Kyokasho N-B" size="20" style="1"/>
+                      <horizontalTextPosition value="11"/>
+                      <text value="Guess Definition"/>
+                      <toolTipText value="Guess the definition of a slang"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="b83e4" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <background color="-270593"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="f4d9a" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="24" style="1"/>
+                      <horizontalAlignment value="0"/>
+                      <horizontalTextPosition value="11"/>
+                      <text value="Quiz"/>
+                    </properties>
+                  </component>
+                  <component id="667df" class="javax.swing.JButton" binding="btnB">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18" style="0"/>
+                      <text value="Button"/>
+                    </properties>
+                  </component>
+                  <component id="ec276" class="javax.swing.JButton" binding="btnA">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18" style="0"/>
+                      <text value="Button"/>
+                    </properties>
+                  </component>
+                  <component id="88ec9" class="javax.swing.JButton" binding="btnC">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18" style="0"/>
+                      <text value="Button"/>
+                    </properties>
+                  </component>
+                  <component id="eb0eb" class="javax.swing.JButton" binding="btnD">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18" style="0"/>
+                      <text value="Button"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
   </grid>
 </form>
