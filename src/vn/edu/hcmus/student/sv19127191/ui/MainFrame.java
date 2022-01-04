@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * vn.edu.hcmus.student.sv19127191.ui<br/>
@@ -137,11 +139,46 @@ public class MainFrame extends JFrame {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
+					String selected = slangJList.getSelectedValue();
+					if (selected == null) return;
 					DefaultListModel<String> model = new DefaultListModel<>();
-					model.addAll(dict.getDefs(slangJList.getSelectedValue()));
+					model.addAll(dict.getDefs(selected));
 					defJList.setModel(model);
 				}
 			}
 		});
+
+		// Add listener for search feature
+		searchBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doSearch(e);
+			}
+		});
+	}
+
+	private void doSearch(ActionEvent e) {
+		try {
+			String type = (String) queryTypeBox.getSelectedItem();
+			if (type == null) return;
+			String query = searchField.getText();
+			if (type.equals("slang")) {
+				ArrayList<String> result = dict.querySlang(query);
+				setJListData(slangJList, result);
+			}
+			else if (type.equals("definition")) {
+				ArrayList<String> result = dict.queryDefinition(query, 0.7f);
+				setJListData(slangJList, result);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(mainPanel, ex.getMessage());
+		}
+	}
+
+	private void setJListData(JList<String> jList, List<String> data) {
+		DefaultListModel<String> model = (DefaultListModel<String>) jList.getModel();
+		model.clear();
+		model.addAll(data);
 	}
 }
