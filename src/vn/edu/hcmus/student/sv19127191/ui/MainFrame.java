@@ -3,6 +3,8 @@ package vn.edu.hcmus.student.sv19127191.ui;
 import vn.edu.hcmus.student.sv19127191.dict.Dictionary;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,11 +28,11 @@ public class MainFrame extends JFrame {
 	private JPanel histPanel;
 	private JPanel sltdPanel;
 	private JPanel quizPanel;
-	private JList slangJList;
-	private JList defJList;
+	private JList<String> slangJList;
+	private JList<String> defJList;
 	private JButton delDefBtn;
 	private JButton refreshBtn;
-	private JComboBox queryTypeBox;
+	private JComboBox<String> queryTypeBox;
 	private JTextField searchField;
 	private JButton searchBtn;
 	private JButton resetBtn;
@@ -39,13 +41,16 @@ public class MainFrame extends JFrame {
 	private JButton delSlangBtn;
 	private JTable histTable;
 	private JLabel randomSlang;
-	private JList randDefJList;
+	private JList<String> randDefJList;
 	private JButton quiz2Btn;
 	private JButton quiz1Btn;
 	private JButton btnB;
 	private JButton btnA;
 	private JButton btnC;
 	private JButton btnD;
+	private JPanel headerDictPane;
+	private JPanel mainDictPane;
+	private JSplitPane dictSplitPane;
 
 	public MainFrame() {
 		super("Slang Dictionary");
@@ -58,6 +63,7 @@ public class MainFrame extends JFrame {
 			cardPane.setBackground(background);
 			cardLayout = (CardLayout) cardPane.getLayout();
 			configMenuButtons();
+			configDictionaryPane();
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
@@ -102,6 +108,39 @@ public class MainFrame extends JFrame {
 				cardLayout.show(cardPane, "quizCard");
 				Color background = new Color(251,222,255);
 				cardPane.setBackground(background);
+			}
+		});
+	}
+
+	private void configDictionaryPane() {
+		// Set the whole slang list to be displayed by default
+		DefaultListModel<String> slangListModel = new DefaultListModel<String>();
+		slangListModel.addAll(dict.getSlangList());
+		slangJList = new JList<>(slangListModel);
+		defJList = new JList<>(new String[]{"Select a slang on the left list to see its definitions."});
+		slangJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+		defJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+		JScrollPane jsrlpSlang = new JScrollPane(slangJList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		JScrollPane jsrlpDef = new JScrollPane(defJList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		jsrlpSlang.setPreferredSize(new Dimension(400, 400));
+		jsrlpDef.setPreferredSize(new Dimension(400, 400));
+		dictSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		dictSplitPane.setLeftComponent(jsrlpSlang);
+		dictSplitPane.setRightComponent(jsrlpDef);
+		mainDictPane = new JPanel();
+		mainDictPane.setLayout(new BoxLayout(mainDictPane, BoxLayout.PAGE_AXIS));
+		mainDictPane.add(dictSplitPane);
+		dictPanel.add(mainDictPane, BorderLayout.CENTER);
+
+		// Add a listener to show definition on the right list
+		slangJList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					DefaultListModel<String> model = new DefaultListModel<>();
+					model.addAll(dict.getDefs(slangJList.getSelectedValue()));
+					defJList.setModel(model);
+				}
 			}
 		});
 	}

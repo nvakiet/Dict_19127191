@@ -40,11 +40,15 @@ public class Dictionary {
 		return slangList;
 	}
 
-	public HashSet<String> getDefs(String slang) {
-		HashSet<String> defs = slangDefs.get(slang);
-		if (defs == null)
-			return new HashSet<>();
-		else return defs;
+	public List<String> getDefs(String slang) {
+		List<String> defs = new ArrayList<>(slangDefs.get(slang));
+		defs.sort(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		return defs;
 	}
 
 	public void addSlang(String slang, String def) throws Exception {
