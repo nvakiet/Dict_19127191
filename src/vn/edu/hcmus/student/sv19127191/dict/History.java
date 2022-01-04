@@ -16,16 +16,21 @@ import java.util.HashSet;
  */
 public class History {
 	private ArrayList<Record> queryRecords;
+	private String[][] table = null;
+	private boolean shouldRefresh = false;
+	public boolean shouldSave = false;
 
 	public History() {
 		queryRecords = new ArrayList<>();
 	}
 
 	public void save() throws Exception {
+		if (!shouldSave) return;
 		File file = new File("data/saved/history.dat");
 		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 		oos.writeObject(queryRecords);
 		oos.close();
+		shouldSave = false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,12 +46,17 @@ public class History {
 
 	public void addRecord(Record rec) {
 		queryRecords.add(rec);
+		shouldSave = true;
+		shouldRefresh = true;
 	}
 
 	public String[][] getTable() {
-		String[][] table = new String[queryRecords.size()][3];
-		for (int i = 0; i < queryRecords.size(); ++i) {
-			table[i] = queryRecords.get(i).toTableRow();
+		if (table == null || shouldRefresh) {
+			table = new String[queryRecords.size()][3];
+			for (int i = 0; i < queryRecords.size(); ++i) {
+				table[i] = queryRecords.get(i).toTableRow();
+			}
+			shouldRefresh = false;
 		}
 		return table;
 	}
@@ -54,7 +64,7 @@ public class History {
 
 class Record implements Serializable {
 	public LocalDateTime time;
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	public String query;
 	public boolean isSlang;
 

@@ -5,6 +5,7 @@ import vn.edu.hcmus.student.sv19127191.dict.Dictionary;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,6 +54,7 @@ public class MainFrame extends JFrame {
 	private JButton btnC;
 	private JButton btnD;
 	private JPanel headerDictPane;
+	private JScrollPane tableScroll;
 	private JPanel mainDictPane;
 	private JSplitPane dictSplitPane;
 
@@ -69,6 +71,7 @@ public class MainFrame extends JFrame {
 			// Setup program
 			setupMenuButtons();
 			setupDictionaryPane();
+			setupHistoryPane();
 			autosaveWithInterval(30);
 
 			// Add window listener to perform final save on exit
@@ -104,12 +107,19 @@ public class MainFrame extends JFrame {
 		});
 
 		// History menu
+		// Also config the table to not be editable
+		JTextField tf = new JTextField();
+		tf.setEditable(false);
+		DefaultCellEditor editor = new DefaultCellEditor( tf );
+		histTable.setDefaultEditor(Object.class, editor);
 		histBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLayout.show(cardPane, "histCard");
 				Color background = new Color(255,249,175);
 				cardPane.setBackground(background);
+				tableScroll.getViewport().setBackground(background);
+				setupHistoryPane();
 			}
 		});
 
@@ -177,6 +187,7 @@ public class MainFrame extends JFrame {
 				doSearch(e);
 			}
 		});
+		searchField.addActionListener(searchBtn.getActionListeners()[0]);
 
 		// Add listener for refresh feature
 		refreshBtn.addActionListener(new ActionListener() {
@@ -202,6 +213,13 @@ public class MainFrame extends JFrame {
 		});
 	}
 
+	private void setupHistoryPane() {
+		DefaultTableModel model = new DefaultTableModel(dict.history.getTable(), new String[] {
+				"Date", "Query String", "Query Type"
+		});
+		histTable.setModel(model);
+	}
+
 	private void doSearch(ActionEvent e) {
 		try {
 			String type = (String) queryTypeBox.getSelectedItem();
@@ -216,6 +234,7 @@ public class MainFrame extends JFrame {
 				setJListData(slangJList, result);
 			}
 			setJListData(defJList, null);
+			dict.history.save();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(mainPanel, ex.getMessage());
