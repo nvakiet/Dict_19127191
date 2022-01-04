@@ -220,6 +220,14 @@ public class MainFrame extends JFrame {
 				doAddSlang();
 			}
 		});
+
+		// Add listener for "Edit slang" feature
+		editBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doEdit();
+			}
+		});
 	}
 
 	private void setupHistoryPane() {
@@ -239,7 +247,7 @@ public class MainFrame extends JFrame {
 				setJListData(slangJList, result);
 			}
 			else if (type.equals("definition")) {
-				ArrayList<String> result = dict.queryDefinition(query, 0.7f);
+				ArrayList<String> result = dict.queryDefinition(query, 0.2f);
 				setJListData(slangJList, result);
 			}
 			setJListData(defJList, null);
@@ -281,9 +289,10 @@ public class MainFrame extends JFrame {
 	private void doAddSlang() {
 		try {
 			AddSlangFrame addFrame = new AddSlangFrame();
+			addFrame.setSlangField(slangJList.getSelectedValue());
 			int input = JOptionPane.showConfirmDialog(mainPanel,
 					addFrame.getContentPane(),
-					"Enter new slang",
+					"Add new slang",
 					JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.PLAIN_MESSAGE);
 			if (input == JOptionPane.OK_OPTION) {
@@ -310,6 +319,38 @@ public class MainFrame extends JFrame {
 				else {
 					dict.addSlang(inputSlang, inputDef);
 				}
+				refreshBtn.doClick();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+		}
+	}
+
+	private void doEdit() {
+		try {
+			EditSlangFrame editSlangFrame = new EditSlangFrame();
+			editSlangFrame.setOldField(slangJList.getSelectedValue());
+			int input = JOptionPane.showConfirmDialog(mainPanel,
+					editSlangFrame.getContentPane(),
+					"Change slang",
+					JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE);
+			if (input == JOptionPane.OK_OPTION) {
+				String oldSlang = editSlangFrame.getOldSlang();
+				String newSlang = editSlangFrame.getNewSlang();
+				if (dict.existSlang(newSlang)) {
+					int opt = JOptionPane.showConfirmDialog(
+							mainPanel,
+							"The new slang already exists."
+									+ "\nDo you want to merge definitions of old slang into new slang?",
+							"Duplicate slang",
+							JOptionPane.YES_NO_OPTION);
+					if (opt == JOptionPane.NO_OPTION)
+						return;
+				}
+				dict.changeSlang(oldSlang, newSlang);
+				refreshBtn.doClick();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

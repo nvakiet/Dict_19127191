@@ -97,9 +97,12 @@ public class Dictionary {
 			String[] tokenList = oldDef.toLowerCase().split(" ");
 			for (String token : tokenList) {
 				HashSet<String> slangSet = defTokens.get(token);
-				slangSet.remove(slang);
-				if (slangSet.isEmpty())
-					defTokens.remove(token, slangSet);
+				// Avoid repeating tokens whose mappings have been deleted
+				if (slangSet != null) {
+					slangSet.remove(slang);
+					if (slangSet.isEmpty())
+						defTokens.remove(token, slangSet);
+				}
 			}
 		}
 
