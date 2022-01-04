@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * vn.edu.hcmus.student.sv19127191.ui<br/>
@@ -56,6 +60,8 @@ public class MainFrame extends JFrame {
 	private JButton btnD;
 	private JPanel headerDictPane;
 	private JScrollPane tableScroll;
+	private JScrollPane ranDefScroll;
+	private JTextPane quizQuestion;
 	private JPanel mainDictPane;
 	private JSplitPane dictSplitPane;
 
@@ -75,6 +81,7 @@ public class MainFrame extends JFrame {
 			// Display whole dictionary at the beginning
 			refreshBtn.doClick();
 			setupHistoryPane();
+			setupQuizPane();
 			autosaveWithInterval(30);
 
 			// Add window listener to perform final save on exit
@@ -127,6 +134,7 @@ public class MainFrame extends JFrame {
 		});
 
 		// "Slang of the day" menu
+		ranDefScroll.setPreferredSize(new Dimension(600, 400));
 		randDefJList.setModel(new DefaultListModel<String>());
 		sltdBtn.addActionListener(new ActionListener() {
 			@Override
@@ -147,6 +155,11 @@ public class MainFrame extends JFrame {
 				cardLayout.show(cardPane, "quizCard");
 				Color background = new Color(251,222,255);
 				cardPane.setBackground(background);
+				quizQuestion.setText("Choose a quiz type");
+				btnA.setText("Answer A");
+				btnB.setText("Answer B");
+				btnC.setText("Answer C");
+				btnD.setText("Answer D");
 			}
 		});
 	}
@@ -212,7 +225,7 @@ public class MainFrame extends JFrame {
 					if (!success) {
 						int opt = JOptionPane.showConfirmDialog(
 								mainPanel,
-								"Can't find data/init/original.data\n" +
+								"Can't find data/init/original.dat\n" +
 										"Will try to reinitialize dictionary using data/init/slang.txt\n" +
 										"Proceed?",
 								"Unsuccessful reset",
@@ -432,6 +445,111 @@ public class MainFrame extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+		}
+	}
+
+	private void setupQuizPane() {
+		// Setup the UI of quiz panel, quiz question should be centered
+		StyledDocument doc = quizQuestion.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+		// Create arrays of 4 slangs and definitions
+		String[] slangs = new String[4];
+		String[] defs = new String[4];
+		// Make a button array for randomizer
+		JButton[] buttons = {btnA, btnB, btnC, btnD};
+		// Create a randomizer
+		Random random = new Random();
+		final int[] correct = new int[1];
+		final boolean[] mode = new boolean[1]; //Mode: false = guess definition, true = guess slang
+		correct[0] = -1;
+
+		// Add listener to trigger quiz "Guess definition of a slang"
+		quiz1Btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Prepare 4 slangs and definitions of these slangs
+				// Prepare 4 definitions of 4 slangs
+				mode[0] = false;
+				for (int i = 0; i < 4; ++i) {
+					slangs[i] = dict.getRandomSlang();
+					defs[i] = dict.getRandomDefinition(slangs[i]);
+				}
+				// Randomize a correct answer in these 4 slangs
+				correct[0] = random.nextInt(4);
+
+				// Set the correct slang as question
+				quizQuestion.setText(slangs[correct[0]]);
+				// Set the definitions as texts for 4 answer buttons
+				for (int i = 0; i < 4; ++i) {
+					// If the string is too long, set the first 50 characters.
+					// The whole string will be in tooltips
+					if (defs[i].length() > 50) {
+						buttons[i].setText(defs[i].substring(0, 50) + "...");
+					}
+					else {
+						buttons[i].setText(defs[i]);
+					}
+					buttons[i].setToolTipText("<html><p width=\"300\">" +defs[i]+"</p></html>");
+				}
+			}
+		});
+
+		// Add listener to trigger quiz "Guess slang for a definition"
+		quiz2Btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Prepare 4 slangs and definitions of these slangs
+				// Prepare 4 definitions of 4 slangs
+				mode[0] = true;
+				for (int i = 0; i < 4; ++i) {
+					slangs[i] = dict.getRandomSlang();
+					defs[i] = dict.getRandomDefinition(slangs[i]);
+				}
+				// Randomize a correct answer in these 4 slangs
+				correct[0] = random.nextInt(4);
+
+				// Set the correct definition as question
+				quizQuestion.setText(defs[correct[0]]);
+				// Set the slangs as texts for 4 answer buttons
+				for (int i = 0; i < 4; ++i) {
+					// If the string is too long, set the first 50 characters.
+					// The whole string will be in tooltips
+					if (slangs[i].length() > 50) {
+						buttons[i].setText(slangs[i].substring(0, 50) + "...");
+					}
+					else {
+						buttons[i].setText(slangs[i]);
+					}
+					buttons[i].setToolTipText("<html><p width=\"300\">" +slangs[i]+"</p></html>");
+				}
+			}
+		});
+
+		// Set action listeners for answer buttons
+		for (int i = 0; i < 4; ++i) {
+			int finalI = i;
+			buttons[i].addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (correct[0] == -1)
+						return;
+					if (correct[0] == finalI) {
+						JOptionPane.showMessageDialog(mainPanel, "You're correct!");
+					}
+					else {
+						String correctAnswer = !mode[0] ? defs[correct[0]] : slangs[correct[0]];
+						JOptionPane.showMessageDialog(mainPanel, "<html><p width=\"400\">" +
+								"You're wrong!<br>" +
+								"The correct answer is \"" + correctAnswer + "\"" +
+								"</p></html>");
+					}
+					correct[0] = -1;
+					quizBtn.doClick();
+				}
+			});
 		}
 	}
 }

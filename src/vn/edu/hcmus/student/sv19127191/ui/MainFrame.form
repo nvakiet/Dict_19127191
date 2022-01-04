@@ -308,7 +308,7 @@
                   </component>
                 </children>
               </grid>
-              <scrollpane id="dac8f">
+              <scrollpane id="dac8f" binding="ranDefScroll">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -338,7 +338,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <grid id="57f2e" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="57f2e" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints border-constraint="North"/>
                 <properties>
@@ -372,7 +372,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="b83e4" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="b83e4" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="true" same-size-vertically="true" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints border-constraint="Center"/>
                 <properties>
@@ -380,20 +380,9 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="f4d9a" class="javax.swing.JLabel">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <font size="24" style="1"/>
-                      <horizontalAlignment value="0"/>
-                      <horizontalTextPosition value="11"/>
-                      <text value="Quiz"/>
-                    </properties>
-                  </component>
                   <component id="667df" class="javax.swing.JButton" binding="btnB">
                     <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <font size="18" style="0"/>
@@ -402,7 +391,7 @@
                   </component>
                   <component id="ec276" class="javax.swing.JButton" binding="btnA">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <font size="18" style="0"/>
@@ -411,7 +400,7 @@
                   </component>
                   <component id="88ec9" class="javax.swing.JButton" binding="btnC">
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <font size="18" style="0"/>
@@ -420,11 +409,23 @@
                   </component>
                   <component id="eb0eb" class="javax.swing.JButton" binding="btnD">
                     <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <font size="18" style="0"/>
                       <text value="Button"/>
+                    </properties>
+                  </component>
+                  <component id="b7e8f" class="javax.swing.JTextPane" binding="quizQuestion">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="400" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <editable value="false"/>
+                      <font size="22" style="1"/>
+                      <text value="Quiz"/>
                     </properties>
                   </component>
                 </children>

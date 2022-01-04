@@ -264,6 +264,8 @@ public class Dictionary {
 		oos.writeObject(dailySlang);
 		oos.close();
 		if (firstTime) {
+			lastRandomDate = LocalDate.MIN;
+			dailySlang = "";
 			file = new File("data/init/original.dat");
 			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 			oos.writeObject(slangDefs);
