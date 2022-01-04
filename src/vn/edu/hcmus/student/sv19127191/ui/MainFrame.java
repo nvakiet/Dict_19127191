@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,15 +66,33 @@ public class MainFrame extends JFrame {
 			Color background = new Color(175, 255, 211);
 			cardPane.setBackground(background);
 			cardLayout = (CardLayout) cardPane.getLayout();
-			configMenuButtons();
-			configDictionaryPane();
+			// Setup program
+			setupMenuButtons();
+			setupDictionaryPane();
+			autosaveWithInterval(30);
+
+			// Add window listener to perform final save on exit
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					super.windowClosing(e);
+					try {
+						dict.save();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(mainPanel, "Error while saving dictionary: "+ ex.getMessage()
+								+ "\nAny changes to the dictionary may not be saved. Please restart the program.");
+					}
+					e.getWindow().dispose();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
 		}
 	}
 
-	private void configMenuButtons() {
+	private void setupMenuButtons() {
 		// Dictionary Menu
 		dictBtn.addActionListener(new ActionListener() {
 			@Override
@@ -114,7 +134,9 @@ public class MainFrame extends JFrame {
 		});
 	}
 
-	private void configDictionaryPane() {
+
+
+	private void setupDictionaryPane() {
 		// Set the whole slang list to be displayed by default
 		DefaultListModel<String> slangListModel = new DefaultListModel<String>();
 		slangListModel.addAll(dict.getSlangList());
@@ -155,6 +177,29 @@ public class MainFrame extends JFrame {
 				doSearch(e);
 			}
 		});
+
+		// Add listener for refresh feature
+		refreshBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setJListData(slangJList, dict.getSlangList());
+				setJListData(defJList, null);
+			}
+		});
+
+		// Add listener for reset feature
+		resetBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					dict.reset();
+					refreshBtn.doClick(); // "Click" the refresh button to refresh
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(mainPanel, ex.getMessage());
+				}
+			}
+		});
 	}
 
 	private void doSearch(ActionEvent e) {
@@ -170,6 +215,7 @@ public class MainFrame extends JFrame {
 				ArrayList<String> result = dict.queryDefinition(query, 0.7f);
 				setJListData(slangJList, result);
 			}
+			setJListData(defJList, null);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(mainPanel, ex.getMessage());
@@ -177,8 +223,30 @@ public class MainFrame extends JFrame {
 	}
 
 	private void setJListData(JList<String> jList, List<String> data) {
-		DefaultListModel<String> model = (DefaultListModel<String>) jList.getModel();
+		if (data == null) {
+			jList.setModel(new DefaultListModel<String>());
+			return;
+		}
+		DefaultListModel<String> model = ((DefaultListModel<String>) jList.getModel());
 		model.clear();
 		model.addAll(data);
+	}
+
+	private void autosaveWithInterval(long seconds) {
+		Thread t = new Thread(() -> {
+			try {
+				long milis = seconds * 1000;
+				while (true) {
+					dict.save();
+					Thread.sleep(milis);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(mainPanel, "Error while saving dictionary: "+ e.getMessage()
+						+ "\nAny changes to the dictionary may not be saved. Please restart the program.");
+			}
+		});
+		t.setDaemon(true);
+		t.start();
 	}
 }

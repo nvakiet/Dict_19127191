@@ -24,6 +24,7 @@ public class Dictionary {
 	private String dailySlang = "";
 	private final Random random = new Random();
 	private boolean shouldRefresh = false;
+	private boolean shouldSave = false;
 	private List<String> slangList = null;
 
 	public Dictionary() {
@@ -78,6 +79,7 @@ public class Dictionary {
 		}
 
 		shouldRefresh = true;
+		shouldSave = true;
 	}
 
 	public void addSlang(String slang, String[] multiDef) throws Exception {
@@ -102,6 +104,7 @@ public class Dictionary {
 		}
 
 		shouldRefresh = true;
+		shouldSave = true;
 	}
 
 	public void removeDefinition(String slang, String def) throws Exception {
@@ -121,6 +124,7 @@ public class Dictionary {
 		}
 
 		shouldRefresh = true;
+		shouldSave = true;
 	}
 
 	public void changeSlang(String oldSlang, String newSlang) throws Exception {
@@ -209,8 +213,14 @@ public class Dictionary {
 		else {
 			throw new Exception("No data file found. Please put a slang.txt file in data/init");
 		}
-
+		shouldSave = true;
 		save();
+	}
+
+	public void reset() throws Exception {
+		slangDefs.clear();
+		defTokens.clear();
+		init();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -232,7 +242,8 @@ public class Dictionary {
 		getSlangList();
 	}
 
-	public void save() throws Exception {
+	public synchronized void save() throws Exception {
+		if (!shouldSave) return;
 		File file = new File("data/saved/dictionary.dat");
 		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 
@@ -243,6 +254,8 @@ public class Dictionary {
 
 		oos.close();
 		history.save();
+		System.out.println("SAVED");
+		shouldSave = false;
 	}
 
 	public String getRandomSlang() {
