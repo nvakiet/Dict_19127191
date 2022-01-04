@@ -65,7 +65,7 @@ public class MainFrame extends JFrame {
 		setContentPane(mainPanel);
 		try {
 			dict = new Dictionary();
-			dict.load();
+			dict.load("data/saved/dictionary.dat");
 			Color background = new Color(175, 255, 211);
 			cardPane.setBackground(background);
 			cardLayout = (CardLayout) cardPane.getLayout();
@@ -83,7 +83,7 @@ public class MainFrame extends JFrame {
 				public void windowClosing(WindowEvent e) {
 					super.windowClosing(e);
 					try {
-						dict.save();
+						dict.save(false);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						JOptionPane.showMessageDialog(mainPanel, "Error while saving dictionary: "+ ex.getMessage()
@@ -204,7 +204,19 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					dict.reset();
+					boolean success = dict.load("data/init/original.dat");
+					if (!success) {
+						int opt = JOptionPane.showConfirmDialog(
+								mainPanel,
+								"Can't find data/init/original.data\n" +
+										"Will try to reinitialize dictionary using data/init/slang.txt\n" +
+										"Proceed?",
+								"Unsuccessful reset",
+								JOptionPane.YES_NO_OPTION
+						);
+						if (opt == JOptionPane.YES_OPTION)
+							dict.init();
+					}
 					refreshBtn.doClick(); // "Click" the refresh button to refresh
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -226,6 +238,22 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				doEdit();
+			}
+		});
+
+		// Add listener for "Delete slang" feature
+		delSlangBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doRemoveSlang();
+			}
+		});
+
+		// Add listener for "Delete definition" feature
+		delDefBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doRemoveDef();
 			}
 		});
 	}
@@ -273,7 +301,7 @@ public class MainFrame extends JFrame {
 			try {
 				long milis = seconds * 1000;
 				while (true) {
-					dict.save();
+					dict.save(false);
 					Thread.sleep(milis);
 				}
 			} catch (Exception e) {
@@ -351,6 +379,51 @@ public class MainFrame extends JFrame {
 				}
 				dict.changeSlang(oldSlang, newSlang);
 				refreshBtn.doClick();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+		}
+	}
+
+	private void doRemoveSlang() {
+		try {
+			String selectedSlang = slangJList.getSelectedValue();
+			if (selectedSlang == null)
+				return;
+			int opt = JOptionPane.showConfirmDialog(
+					mainPanel,
+					"Do you want to remove this slang?",
+					"Confirmation",
+					JOptionPane.YES_NO_OPTION);
+			if (opt == JOptionPane.YES_OPTION) {
+				dict.removeSlang(selectedSlang);
+				((DefaultListModel<String>) slangJList.getModel()).remove(slangJList.getSelectedIndex());
+				setJListData(defJList, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+		}
+	}
+
+	private void doRemoveDef() {
+		try {
+			String selectedSlang = slangJList.getSelectedValue();
+			String selectedDef = defJList.getSelectedValue();
+			if (selectedSlang == null || selectedDef == null)
+				return;
+			int opt = JOptionPane.showConfirmDialog(
+					mainPanel,
+					"Do you want to remove this definition?",
+					"Confirmation",
+					JOptionPane.YES_NO_OPTION);
+			if (opt == JOptionPane.YES_OPTION) {
+				dict.removeDefinition(selectedSlang, selectedDef);
+				DefaultListModel<String> model = (DefaultListModel<String>) defJList.getModel();
+				model.remove(defJList.getSelectedIndex());
+				if (model.isEmpty())
+					((DefaultListModel<String>) slangJList.getModel()).remove(slangJList.getSelectedIndex());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

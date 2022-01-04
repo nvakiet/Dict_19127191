@@ -121,9 +121,11 @@ public class Dictionary {
 		String[] tokenList = def.split(" ");
 		for (String token : tokenList) {
 			HashSet<String> slangSet = defTokens.get(token);
-			slangSet.remove(slang);
-			if (slangSet.isEmpty())
-				defTokens.remove(token, slangSet);
+			if (slangSet != null) {
+				slangSet.remove(slang);
+				if (slangSet.isEmpty())
+					defTokens.remove(token, slangSet);
+			}
 		}
 
 		shouldRefresh = true;
@@ -197,10 +199,12 @@ public class Dictionary {
 	}
 
 	public void init() throws Exception {
-		File file = new File("data/init/test.txt");
+		File file = new File("data/init/slang.txt");
 		if (file.exists() && !file.isDirectory()) {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			slangDefs.clear();
+			defTokens.clear();
 
+			BufferedReader br = new BufferedReader(new FileReader(file));
 			//Extract each line from the text file
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -217,19 +221,13 @@ public class Dictionary {
 			throw new Exception("No data file found. Please put a slang.txt file in data/init");
 		}
 		shouldSave = true;
-		save();
-	}
-
-	public void reset() throws Exception {
-		slangDefs.clear();
-		defTokens.clear();
-		init();
+		save(true);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void load() throws Exception {
+	public boolean load(String filepath) throws Exception {
 		history.load();
-		File file = new File("data/saved/dictionary.dat");
+		File file = new File(filepath);
 		// If there's saved data, load the saved dictionary
 		if (file.exists() && !file.isDirectory()) {
 			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -238,24 +236,42 @@ public class Dictionary {
 			lastRandomDate = (LocalDate) ois.readObject();
 			dailySlang = (String) ois.readObject();
 			ois.close();
-			return;
+			shouldRefresh = true;
+			return true;
 		}
-		// If there's no saved data, load the initial slang.txt
-		init();
+		else if (filepath.equals("data/init/original.dat")) {
+			// If this is already trying to load the original data file
+			// That means there's no orginal.dat to load
+			return false;
+		}
+		// If there's no saved data, try to load the initial data file
+		if (!load("data/init/original.dat")) {
+			// If there's no original data, initialize data from slang.txt
+			init();
+		}
+		shouldRefresh = true;
 		getSlangList();
+		return true;
 	}
 
-	public synchronized void save() throws Exception {
+	public synchronized void save(boolean firstTime) throws Exception {
 		if (!shouldSave) return;
 		File file = new File("data/saved/dictionary.dat");
 		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-
 		oos.writeObject(slangDefs);
 		oos.writeObject(defTokens);
 		oos.writeObject(lastRandomDate);
 		oos.writeObject(dailySlang);
-
 		oos.close();
+		if (firstTime) {
+			file = new File("data/init/original.dat");
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+			oos.writeObject(slangDefs);
+			oos.writeObject(defTokens);
+			oos.writeObject(lastRandomDate);
+			oos.writeObject(dailySlang);
+			oos.close();
+		}
 		history.save();
 		System.out.println("SAVED");
 		shouldSave = false;

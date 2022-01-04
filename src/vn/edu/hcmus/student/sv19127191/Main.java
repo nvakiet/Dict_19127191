@@ -20,20 +20,11 @@ public class Main {
 	public static void mainTest(String[] args) {
 		try {
 			Dictionary dict = new Dictionary();
-			dict.load();
-			double[] measures = new double[1];
-			for (int i = 0; i < 1; ++i) {
+			double[] measures = new double[10];
+			for (int i = 0; i < 10; ++i) {
 				long startTime = System.nanoTime();
-//				ArrayList<String> res = dict.queryDefinition("it", 1f);
-				String[][] table = dict.history.getTable();
+				dict.load("data/init/original.dat");
 				long stopTime = System.nanoTime();
-//				for (String s : res) {
-//					System.out.println(s);
-//				}
-//				dict.save();
-				for (String[] row : table) {
-					System.out.println(row[0] + " - " + row[1] + " - " + row[2]);
-				}
 				measures[i] = (stopTime - startTime) / 1_000_000_000.0;
 				System.out.printf("Time elapsed: %.6f\n", measures[i]);
 			}
@@ -48,5 +39,6 @@ public class Main {
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+		//mainTest(null);
 	}
 }
