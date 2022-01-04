@@ -296,6 +296,7 @@ public class Dictionary {
 				|| (lastRandomDate.equals(LocalDate.MIN) && dailySlang.equals(""))) {
 			lastRandomDate = today;
 			dailySlang = getRandomSlang();
+			shouldSave = true;
 		}
 		return dailySlang;
 	}

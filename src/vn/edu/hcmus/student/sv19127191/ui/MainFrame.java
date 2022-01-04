@@ -127,12 +127,16 @@ public class MainFrame extends JFrame {
 		});
 
 		// "Slang of the day" menu
+		randDefJList.setModel(new DefaultListModel<String>());
 		sltdBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLayout.show(cardPane, "sltdCard");
 				Color background = new Color(158,222,255);
 				cardPane.setBackground(background);
+				String dailySlang = dict.dailyRandomSlang();
+				randomSlang.setText(dailySlang);
+				setJListData(randDefJList, dict.getDefs(dailySlang));
 			}
 		});
 
