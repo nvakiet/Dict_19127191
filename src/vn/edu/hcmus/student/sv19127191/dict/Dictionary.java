@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class Dictionary {
 	// Map from a slang to its definitions
-	private HashMap<String, HashSet<String>> slangDefs;
+	private TreeMap<String, HashSet<String>> slangDefs;
 	// Map from a definition token to a set of possible slangs whose definitions contain this token
 	private HashMap<String, HashSet<String>> defTokens;
 	// History of queries
@@ -28,14 +28,14 @@ public class Dictionary {
 	private List<String> slangList = null;
 
 	public Dictionary() {
-		slangDefs = new HashMap<>();
+		slangDefs = new TreeMap<>();
 		defTokens = new HashMap<>();
 		history = new History();
 	}
 
 	public List<String> getSlangList() {
 		if (slangList == null || shouldRefresh) {
-			slangList = new ArrayList<>(slangDefs.keySet());
+			slangList = new ArrayList<>(slangDefs.navigableKeySet());
 			shouldRefresh = false;
 		}
 		return slangList;
@@ -230,7 +230,7 @@ public class Dictionary {
 		// If there's saved data, load the saved dictionary
 		if (file.exists() && !file.isDirectory()) {
 			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-			slangDefs = (HashMap<String, HashSet<String>>) ois.readObject();
+			slangDefs = (TreeMap<String, HashSet<String>>) ois.readObject();
 			defTokens = (HashMap<String, HashSet<String>>) ois.readObject();
 			lastRandomDate = (LocalDate) ois.readObject();
 			dailySlang = (String) ois.readObject();

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -71,6 +72,8 @@ public class MainFrame extends JFrame {
 			// Setup program
 			setupMenuButtons();
 			setupDictionaryPane();
+			// Display whole dictionary at the beginning
+			refreshBtn.doClick();
 			setupHistoryPane();
 			autosaveWithInterval(30);
 
@@ -148,9 +151,7 @@ public class MainFrame extends JFrame {
 
 	private void setupDictionaryPane() {
 		// Set the whole slang list to be displayed by default
-		DefaultListModel<String> slangListModel = new DefaultListModel<String>();
-		slangListModel.addAll(dict.getSlangList());
-		slangJList = new JList<>(slangListModel);
+		slangJList = new JList<>(new DefaultListModel<String>());
 		defJList = new JList<>(new String[]{"Select a slang on the left list to see its definitions."});
 		slangJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 		defJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
@@ -211,6 +212,14 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+
+		// Add listener for "Add slang" feature
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doAddSlang();
+			}
+		});
 	}
 
 	private void setupHistoryPane() {
@@ -267,5 +276,44 @@ public class MainFrame extends JFrame {
 		});
 		t.setDaemon(true);
 		t.start();
+	}
+
+	private void doAddSlang() {
+		try {
+			AddSlangFrame addFrame = new AddSlangFrame();
+			int input = JOptionPane.showConfirmDialog(mainPanel,
+					addFrame.getContentPane(),
+					"Enter new slang",
+					JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE);
+			if (input == JOptionPane.OK_OPTION) {
+				String inputSlang = addFrame.getSlang();
+				String inputDef = addFrame.getDef();
+				if (dict.existSlang(inputSlang)) {
+					String[] options = {"Overwrite", "Add definition", "Cancel"};
+					int opt = JOptionPane.showOptionDialog(
+							mainPanel,
+							"The slang already exists."
+									+ "\nOverwrite the old slang or add a new definition to this slang?",
+							"Duplicate Slang",
+							JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							options,
+							null
+					);
+					if (opt == JOptionPane.YES_OPTION)
+						dict.overwriteSlang(inputSlang, inputDef);
+					else if (opt == JOptionPane.NO_OPTION)
+						dict.addSlang(inputSlang, inputDef);
+				}
+				else {
+					dict.addSlang(inputSlang, inputDef);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+		}
 	}
 }
