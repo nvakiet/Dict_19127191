@@ -13,18 +13,31 @@ public class EditSlangFrame {
 	private JTextField newField;
 	private JTextField oldField;
 
+	/**
+	 * Get the content panel of this frame to pass into the "Edit" dialog
+	 */
 	public JPanel getContentPane() {
 		return contentPane;
 	}
 
+	/**
+	 * Get a slang from old slang text field of the dialog
+	 */
 	public String getOldSlang() {
 		return oldField.getText();
 	}
 
+	/**
+	 * Set the old slang text field of the dialog
+	 * @param slang a slang selected in the slang list of dictionary UI
+	 */
 	public void setOldField(String slang) {
 		oldField.setText(slang);
 	}
 
+	/**
+	 * Get a slang from the new slang text field of the dialog
+	 */
 	public String getNewSlang() {
 		return newField.getText();
 	}

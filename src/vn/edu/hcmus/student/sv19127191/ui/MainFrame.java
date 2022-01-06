@@ -23,7 +23,7 @@ import java.util.Random;
  * vn.edu.hcmus.student.sv19127191.ui<br/>
  * Created by Ngo Van Anh Kiet - MSSV: 19127191<br/>
  * Date 1/1/2022 - 7:19 AM<br/>
- * Description: ...<br/>
+ * Description: The main GUI class of the program, also containing logics for Dictionary<br/>
  */
 public class MainFrame extends JFrame {
 	Dictionary dict;
@@ -65,6 +65,9 @@ public class MainFrame extends JFrame {
 	private JPanel mainDictPane;
 	private JSplitPane dictSplitPane;
 
+	/**
+	 * The only constructor of this frame. Initialize the frame with this to start the program.
+	 */
 	public MainFrame() {
 		super("Slang Dictionary");
 		setIconImage(new ImageIcon("res/dictionary_appicon.png").getImage());
@@ -105,6 +108,9 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Set up the listeners and logic for main menu buttons: Dictionary, History, Slang of The Day, Quiz
+	 */
 	private void setupMenuButtons() {
 		// Dictionary Menu
 		dictBtn.addActionListener(new ActionListener() {
@@ -164,8 +170,9 @@ public class MainFrame extends JFrame {
 		});
 	}
 
-
-
+	/**
+	 * Set up the Dictionary UI: GUI compositions, listeners, logic.
+	 */
 	private void setupDictionaryPane() {
 		// Set the whole slang list to be displayed by default
 		slangJList = new JList<>(new DefaultListModel<String>());
@@ -275,6 +282,9 @@ public class MainFrame extends JFrame {
 		});
 	}
 
+	/**
+	 * Set up the History UI: prepare history data to display
+	 */
 	private void setupHistoryPane() {
 		DefaultTableModel model = new DefaultTableModel(dict.history.getTable(), new String[] {
 				"Date", "Query String", "Query Type"
@@ -282,6 +292,10 @@ public class MainFrame extends JFrame {
 		histTable.setModel(model);
 	}
 
+	/**
+	 * Perform a search in the dictionary. This is for using with an Action Listener.
+	 * @param e An event detected by the action listener
+	 */
 	private void doSearch(ActionEvent e) {
 		try {
 			String type = (String) queryTypeBox.getSelectedItem();
@@ -303,6 +317,11 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Set the data for a JList to display.
+	 * @param jList The target JList used for displaying data.
+	 * @param data The data to display. If it's null, then JList is empty.
+	 */
 	private void setJListData(JList<String> jList, List<String> data) {
 		if (data == null) {
 			jList.setModel(new DefaultListModel<String>());
@@ -313,6 +332,11 @@ public class MainFrame extends JFrame {
 		model.addAll(data);
 	}
 
+	/**
+	 * Set the auto-saving interval of the Dictionary.
+	 * The Dictionary will automatically save the data after a number of seconds, if there're changes in the dictionary.
+	 * @param seconds The time between each save-checking.
+	 */
 	private void autosaveWithInterval(long seconds) {
 		Thread t = new Thread(() -> {
 			try {
@@ -331,6 +355,9 @@ public class MainFrame extends JFrame {
 		t.start();
 	}
 
+	/**
+	 * Perform the "Add slang" feature in the Dictionary UI
+	 */
 	private void doAddSlang() {
 		try {
 			AddSlangFrame addFrame = new AddSlangFrame();
@@ -372,6 +399,9 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Perform the "Edit slang" feature in the Dictionary UI
+	 */
 	private void doEdit() {
 		try {
 			EditSlangFrame editSlangFrame = new EditSlangFrame();
@@ -403,6 +433,9 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Perform the "Remove slang" feature in the Dictionary UI
+	 */
 	private void doRemoveSlang() {
 		try {
 			String selectedSlang = slangJList.getSelectedValue();
@@ -424,6 +457,9 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Perform the "Remove definition of a slang" feature in the Dictionary UI
+	 */
 	private void doRemoveDef() {
 		try {
 			String selectedSlang = slangJList.getSelectedValue();
@@ -448,6 +484,10 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Set up the Quiz panel: randomize slangs and definitions from the Dictionary, make action listeners
+	 * Also display the quiz question and answers.
+	 */
 	private void setupQuizPane() {
 		// Setup the UI of quiz panel, quiz question should be centered
 		StyledDocument doc = quizQuestion.getStyledDocument();
