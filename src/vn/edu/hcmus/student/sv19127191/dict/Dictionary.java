@@ -27,12 +27,19 @@ public class Dictionary {
 	private boolean shouldSave = false;
 	private List<String> slangList = null;
 
+	/**
+	 * Default constructor of the dictionary.
+	 */
 	public Dictionary() {
 		slangDefs = new TreeMap<>();
 		defTokens = new HashMap<>();
 		history = new History();
 	}
 
+	/**
+	 * Get the whole list of slang words from the dictionary.
+	 * @return a list of slang words (without their definitions)
+	 */
 	public List<String> getSlangList() {
 		if (slangList == null || shouldRefresh) {
 			slangList = new ArrayList<>(slangDefs.navigableKeySet());
@@ -41,6 +48,11 @@ public class Dictionary {
 		return slangList;
 	}
 
+	/**
+	 * Get the definitions of a slang word in the dictionary
+	 * @param slang The slang word to query
+	 * @return A list of definitions for the input slang word
+	 */
 	public List<String> getDefs(String slang) {
 		List<String> defs = new ArrayList<>(slangDefs.get(slang));
 		defs.sort(new Comparator<String>() {
@@ -52,6 +64,11 @@ public class Dictionary {
 		return defs;
 	}
 
+	/**
+	 * Add a slang word with a definition into the dictionary. This can also be used to add a definition to an existing slang word.
+	 * @param slang The slang word to add to the dictionary
+	 * @param def The definition of the input slang
+	 */
 	public void addSlang(String slang, String def) throws Exception {
 		HashSet<String> defSet = slangDefs.get(slang);
 		// If the word doesn't exist in dictionary yet
@@ -82,12 +99,21 @@ public class Dictionary {
 		shouldSave = true;
 	}
 
+	/**
+	 * Add a slang word with multiple definitions to the dictionary. This can be used to add multiple definitions to an existing slang.
+	 * @param slang A slang word to add to the dictionary.
+	 * @param multiDef An array of definitions of the input slang word.
+	 */
 	public void addSlang(String slang, String[] multiDef) throws Exception {
 		for (String def : multiDef) {
 			addSlang(slang, def);
 		}
 	}
 
+	/**
+	 * Remove a slang word from the dictionary, along with its definitions.
+	 * @param slang The slang word to remove.
+	 */
 	public void removeSlang(String slang) throws Exception {
 		// Delete the dictionary record
 		HashSet<String> defSet = slangDefs.remove(slang);
@@ -110,6 +136,11 @@ public class Dictionary {
 		shouldSave = true;
 	}
 
+	/**
+	 * Remove a definition of a slang word. If the slang word has 0 definition left, the slang will also be removed from the dictionary.
+	 * @param slang The slang word with the definition to be removed.
+	 * @param def The definition to be removed from the input slang.
+	 */
 	public void removeDefinition(String slang, String def) throws Exception {
 		// Remove the definition from the slang def set
 		slangDefs.get(slang).remove(def);
@@ -132,6 +163,11 @@ public class Dictionary {
 		shouldSave = true;
 	}
 
+	/**
+	 * Change a slang word into a new slang, keeping its definitions. If the new slang already exists, the old slang definitions will be merged into the new slang.
+	 * @param oldSlang The slang to change from
+	 * @param newSlang The slang to change to
+	 */
 	public void changeSlang(String oldSlang, String newSlang) throws Exception {
 		HashSet<String> defSet = slangDefs.get(oldSlang);
 		if (defSet == null)
@@ -140,10 +176,20 @@ public class Dictionary {
 		addSlang(newSlang, defSet.toArray(String[]::new));
 	}
 
+	/**
+	 * Check if a slang word exists in the dictionary
+	 * @param slang The dictionary to check for its existence
+	 * @return True if the slang exists, false if it doesn't exist
+	 */
 	public boolean existSlang(String slang) {
 		return slangDefs.containsKey(slang);
 	}
 
+	/**
+	 * Overwrite the old definitions of a slang with a new definition.
+	 * @param slang The slang to be overwritten
+	 * @param def The new definition of the input slang
+	 */
 	public void overwriteSlang(String slang, String def) throws Exception {
 		// Remove old record
 		removeSlang(slang);
@@ -152,6 +198,11 @@ public class Dictionary {
 		addSlang(slang, def);
 	}
 
+	/**
+	 * Search for a slang word in the dictionary.
+	 * @param slang The query to perform search.
+	 * @return A list of potential slang words that fit the query
+	 */
 	public ArrayList<String> querySlang(String slang) throws Exception {
 		history.addRecord(new Record(LocalDateTime.now(), slang, true));
 		getSlangList();
@@ -160,6 +211,12 @@ public class Dictionary {
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
+	/**
+	 * Search for a slang whose definitions containing the definition query.
+	 * @param def The query to perform search
+	 * @param miss_ratio A float value between 0 and 1. The search result will be empty if the missing times (when a token in the query returns nothing) is more than the number of tokens in the query * miss ratio.
+	 * @return A list of potential slang words that fit the query
+	 */
 	public ArrayList<String> queryDefinition(String def, float miss_ratio) throws Exception {
 		history.addRecord(new Record(LocalDateTime.now(), def, false));
 		HashSet<String> result = null;
@@ -198,6 +255,13 @@ public class Dictionary {
 		return list;
 	}
 
+	/**
+	 * Initialize the dictionary data with a file in data/init/slang.txt.<br>
+	 * The data in that file must be in the following format for each row:<br>
+	 * Slang`Definition1|Definition2|...<br>
+	 * Where "`" is the delimiter character between a slang and its definitions.<br>
+	 * And "|" is the delimiter character between definitions of a slang.
+	 */
 	public void init() throws Exception {
 		File file = new File("data/init/slang.txt");
 		if (file.exists() && !file.isDirectory()) {
@@ -224,6 +288,11 @@ public class Dictionary {
 		save(true);
 	}
 
+	/**
+	 * Load the dictionary data with a *.dat file (typically in data/init or data/saved).
+	 * @param filepath The filepath to load the dictionary data
+	 * @return True if the operation succeeds, false if it fails.
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean load(String filepath) throws Exception {
 		history.load();
@@ -254,6 +323,11 @@ public class Dictionary {
 		return true;
 	}
 
+	/**
+	 * Save the dictionary data to a *.dat file. If the flag firstTime is set, it will also save to another file called original.dat.<br>
+	 * The save location is in data/saved, or data/init for original.dat.
+	 * @param firstTime Signal whether this save is for the first time the dictionary is started.
+	 */
 	public synchronized void save(boolean firstTime) throws Exception {
 		if (!shouldSave) return;
 		File file = new File("data/saved/dictionary.dat");
@@ -279,11 +353,20 @@ public class Dictionary {
 		shouldSave = false;
 	}
 
+	/**
+	 * Get a random slang word from the dictionary
+	 * @return A random slang word
+	 */
 	public String getRandomSlang() {
 		getSlangList();
 		return slangList.get(random.nextInt(slangList.size()));
 	}
 
+	/**
+	 * Get a random definition from the definition set of a slang word in the dictionary.
+	 * @param slang The slang to get the random definition
+	 * @return A random definition of the input slang
+	 */
 	public String getRandomDefinition(String slang) {
 		List<String> defList = getDefs(slang).stream().toList();
 		if (defList.isEmpty())
@@ -291,6 +374,10 @@ public class Dictionary {
 		return defList.get(random.nextInt(defList.size()));
 	}
 
+	/**
+	 * Get a random slang word of a day. If the local date of the computer hasn't changed to the day after, it will return the same slang.
+	 * @return A random daily slang word
+	 */
 	public String dailyRandomSlang() {
 		LocalDate today = LocalDate.now();
 		// If it's a new day since the last daily random or it's the first time running
